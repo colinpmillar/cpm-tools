@@ -1,11 +1,10 @@
-
 # remove previous copies if any present
 sapply( rev(which(search() %in% "RCT3_functions")), function(i) {detach(pos = i); invisible(NULL)} )     
 
 # create a place on the search path for functions to sit
 rct3.env <- attach(NULL, name = "RCT3_functions")
 
-# put functions in the
+# put functions in the right place
 evalq(envir = rct3.env, 
 {
 
