@@ -28,7 +28,7 @@ function(fname, sep = ",")
 
 # rct3 function - from the data frame, takes a formula and does an RCT3 on it
 rct3 <- 
-function(formula, data, predictions)
+function(formula, data, predictions, shrink = FALSE)
 {
   form <- formula[[3]]
   bits <- list()
@@ -40,7 +40,6 @@ function(formula, data, predictions)
   bits <- rev(c(bits, form))
   formulas <- lapply(bits, function(x) {tmp <- formula; tmp[[3]] <- tmp[[2]]; tmp[[2]] <- x; tmp})
   formulas2 <- lapply(bits, function(x) {tmp <- formula; tmp[[3]] <- x; tmp})
-
 
   weight <- function(y, y0, D, p) pmax(0, (1 - ((y0 - y)/D)^p)^p)
 
@@ -83,7 +82,22 @@ function(formula, data, predictions)
       function(yr) 
       {
         out <- do.call( rbind, lapply(1:length(formulas), do.one.prediction, predict.yr = yr))
-        out $ WAP.weights <- with(out, (1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE))
+        vpa <- eval(formula[[2]], log.data)[log.data $ yearclass < yr] 
+        out <- rbind(out, data.frame(index = "VPA Mean",
+                                     slope = NA, intercept = NA, 
+                                     se = NA, rsquare = NA, n = length(vpa),
+                                     indices = NA, 
+                                     prediction = mean(vpa),
+                                     se.pred = sd(vpa)))
+        if (shrink)                              
+        {
+          out $ WAP.weights <- with(out, (1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE))
+        }
+        else
+        {
+          out $ WAP.weights <- c(with(out[1:(nrow(out)-1),], (1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE)), 0)
+        }
+          
         out 
       })
   names(out) <- paste("yearclass", predictions, sep=":")
