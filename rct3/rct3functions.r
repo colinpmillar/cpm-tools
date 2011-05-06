@@ -82,7 +82,8 @@ function(formula, data, predictions, shrink = FALSE)
       function(yr) 
       {
         out <- do.call( rbind, lapply(1:length(formulas), do.one.prediction, predict.yr = yr))
-        vpa <- eval(formula[[2]], log.data)[log.data $ yearclass < yr] 
+        vpa <- eval(formula[[2]], log.data)[log.data $ yearclass < yr]
+        vpa <- vpa[!is.na(vpa)] 
         out <- rbind(out, data.frame(index = "VPA Mean",
                                      slope = NA, intercept = NA, 
                                      se = NA, rsquare = NA, n = length(vpa),
@@ -98,7 +99,7 @@ function(formula, data, predictions, shrink = FALSE)
           out $ WAP.weights <- c(with(out[1:(nrow(out)-1),], (1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE)), 0)
         }
           
-        out 
+        out                                                                                                                        
       })
   names(out) <- paste("yearclass", predictions, sep=":")
 
