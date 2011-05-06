@@ -8,7 +8,7 @@ rct3.env <- attach(NULL, name = "RCT3_functions")
 evalq(envir = rct3.env, 
 {
 
-read.rct3 <-
+read.rct3.file <-
 function(fname, sep = ",")
 {
   hdr <- readLines(fname, n = 2)
@@ -26,9 +26,50 @@ function(fname, sep = ",")
   dat
 }   
 
+write.rct3.file <-
+function(x, fname)
+{
+  cat("\nNOT YET!!!\n")
+}
+
+get.rct3.inputs <-
+function(stk.obj, surv.obj, control, rec.age)
+{
+  inputs <- list( recruitment = drop(unclass(rec(stk.obj))) / 1000 )
+
+  for (i in 1:nrow(control))
+  {
+    surv.name <- tolower(gsub("_", "", with(control[i,], paste(survey, "age", ages, sep = ""))))
+    inputs[[ surv.name ]] <- drop(unclass(surv.obj[[control $ survey[i]]] @ index))[paste(control $ ages[i]),]
+  }
+
+  input.ages <- c(rec.age,control $ ages)
+  names(input.ages) <- names(inputs)
+
+  inputs[] <-
+  lapply(names(inputs), 
+    function(nam)
+    {
+      x <- inputs[[nam]]
+      names(x) <- as.numeric(names(x)) - input.ages[nam]
+      x
+    })
+
+  yearclass <- range( unlist(sapply(inputs, function(x) as.numeric(names(x)))))
+  yearclass <- yearclass[1]:yearclass[2] 
+  
+  out <- data.frame(yearclass = yearclass)
+  out[names(inputs)] <- NA
+  rownames(out) <- yearclass
+  
+  for (i in names(inputs))out[names(inputs[[i]]), i] <- inputs[[i]]
+
+  out
+}
+
 # rct3 function - from the data frame, takes a formula and does an RCT3 on it
 rct3 <- 
-function(formula, data, predictions, shrink = FALSE)
+function(formula, data, predictions = NULL, shrink = FALSE)
 {
   form <- formula[[3]]
   bits <- list()
@@ -51,6 +92,7 @@ function(formula, data, predictions, shrink = FALSE)
   function(i, predict.yr)
   {
     wk.data <- subset(log.data, yearclass < predict.yr)
+    if (nrow(wk.data) < 3) stop("too few data points in one survey!") 
     m <- lm(formulas[[i]], data = wk.data)
     b <- {function(x) c(-x[1], 1)/x[2] }(unname(coef(m)))
     rss <- sum( m$residuals^2 )
@@ -69,12 +111,17 @@ function(formula, data, predictions, shrink = FALSE)
       index <- Xp[,2]
     } else index <- pred <- se.pred <- NA
     
-    
     data.frame(index = as.character(formulas[[i]][[2]]), 
                slope = b[2], intercept = b[1], 
                se = sigma, rsquare = rsqr, n = n,
                indices = index, prediction = pred,
                se.pred = se.pred)
+  }
+  
+  if (is.null(predictions)) 
+  {
+    y <- eval(formula[[2]], log.data) 
+    predictions <- log.data $ yearclass[is.na(y)] 
   }
   
   out <- 
@@ -104,9 +151,10 @@ function(formula, data, predictions, shrink = FALSE)
   names(out) <- paste("yearclass", predictions, sep=":")
 
   out <- list(stock = attr(data, "stock"),
-              info = c(length(bits), nrow(data), range(data $ yearclass)), 
+              info = c(length(bits), nrow(data), range(log.data $ yearclass)), 
               rct3 = out, 
-              rct3.summary = do.call(rbind, lapply(out, summarise.rct3)))
+              rct3.summary = do.call(rbind, lapply(out, summarise.rct3)),
+              shrink = shrink)
 
   class(out) <- "rct3"  
   out
@@ -127,11 +175,11 @@ function(x, digits = max(3, getOption("digits") - 3), ...)
   hdr <- with(x,
   c("Analysis by RCT3 ver4.0\n",                       
     stock,
-    paste("\nData for ", info[1]," surveys over ", info[2]," years : ", info[3]," - ", info[4], sep=""),
+    paste("\nData for ", info[1]," surveys over ", info[2]," year classes : ", info[3]," - ", info[4], sep=""),
     "Regression type = C",
     "Tapered time weighting not applied",
     "Survey weighting not applied",
-    "Final estimates not shrunk towards mean",
+    if (x $ shrink) "Final estimates ARE shrunk towards mean" else "Final estimates not shrunk towards mean",
     "Estimates with S.E.'S greater than that of mean included",
     "Minimum S.E. for any survey taken as    .00",
     "Minimum of   3 points used for regression\n",
