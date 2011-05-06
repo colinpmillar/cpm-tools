@@ -2,6 +2,9 @@
 #           - can optionally have an attribute "stock" with the stock name in it
 
 
+# get rct3 functions
+source("http://cpm-tools.googlecode.com/files/rct3functions.r")
+
 # read from the rct3 format
 fname <- "C:/colin/packages/mycode/rct3/whiIN.dat"
 whi.dat <- read.rct3.file(fname, sep = "\t")
