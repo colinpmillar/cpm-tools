@@ -7,9 +7,9 @@ rct3.env <- attach(NULL, name = "RCT3_functions")
 # put functions in the right place
 evalq(envir = rct3.env, 
 {
-
+ 
 read.rct3.file <-
-function(fname, sep = ",")
+function(fname, sep = "\t")
 {
   hdr <- readLines(fname, n = 2)
   stock <- strsplit(hdr, sep)[[1]][1]
@@ -20,11 +20,12 @@ function(fname, sep = ",")
   dat[dat==-11] <- NA
   
   dat <- as.data.frame(dat)  
-  names(dat) <- c("yearclass", "recruitment", ind_names)
+  ind_names <- gsub("-", "_", make.unique(ind_names[1:(ncol(dat) - 2)]))
+  names(dat) <- c("yearclass", "recruitment", ind_names[1:(ncol(dat) - 2)])
   attr(dat, "stock") <- stock
   
   dat
-}   
+}
 
 write.rct3.file <-
 function(x, fname)
@@ -67,9 +68,9 @@ function(stk.obj, surv.obj, control, rec.age)
   out
 }
 
-# rct3 function - from the data frame, takes a formula and does an RCT3 on it
-rct3 <- 
-function(formula, data, predictions = NULL, shrink = FALSE)
+
+rct3 <-
+function(formula, data, predictions = NULL, shrink = FALSE, old = TRUE)
 {
   form <- formula[[3]]
   bits <- list()
@@ -85,8 +86,13 @@ function(formula, data, predictions = NULL, shrink = FALSE)
   weight <- function(y, y0, D, p) pmax(0, (1 - ((y0 - y)/D)^p)^p)
 
   log.data <- data
-  log.data[names(data) != "yearclass"] <- log(data[names(data) != "yearclass"])
-    
+  if (old)
+  {
+    log.data[names(data) != "yearclass"] <- log(data[names(data) != "yearclass"] + 1)
+  } else # think of something to do with zeros
+  {
+    log.data[names(data) != "yearclass"] <- log(data[names(data) != "yearclass"])  
+  }  
   # fit one model at a time
   do.one.prediction <-
   function(i, predict.yr)
@@ -195,7 +201,16 @@ function(x, digits = max(3, getOption("digits") - 3), ...)
   }
   
   print.data.frame(x $ rct3.summary, digits = digits)  
-} 
+}
+
+rct3.recruits <-
+function(x)
+{
+  out <- x $ rct3.summary $ WAP
+  names(out) <- rownames(x $ rct3.summary)
+  out
+}
+ 
 })
 
   
