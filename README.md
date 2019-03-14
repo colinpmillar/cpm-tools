@@ -7,7 +7,8 @@
 rct3
 =======
 
-rct3 provides functions .
+rct3 provides functions to run and summarise a calibrated regression to predict recruitment 
+  using the method decribed by Shepherd and implmented in RCT3 dos program Ver3.1
 
 rct3 is implemented as an [R](https://www.r-project.org) package and
 available on [CRAN](https://cran.r-project.org/package=rct3) - NOT YET!.
