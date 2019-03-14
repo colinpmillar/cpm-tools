@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/colinpmillar/rct3.svg?branch=master)](https://travis-ci.org/colinpmillar/rct3)
-[![CRAN Status](http://r-pkg.org/badges/version/icesTAF)](https://cran.r-project.org/package=rct3)
-[![CRAN Monthly](http://cranlogs.r-pkg.org/badges/icesTAF)](https://cran.r-project.org/package=rct3)
-[![CRAN Total](http://cranlogs.r-pkg.org/badges/grand-total/icesTAF)](https://cran.r-project.org/package=rct3)
+[![CRAN Status](http://r-pkg.org/badges/version/rct3)](https://cran.r-project.org/package=rct3)
+[![CRAN Monthly](http://cranlogs.r-pkg.org/badges/rct3)](https://cran.r-project.org/package=rct3)
+[![CRAN Total](http://cranlogs.r-pkg.org/badges/grand-total/rct3)](https://cran.r-project.org/package=rct3)
 
 
 rct3
