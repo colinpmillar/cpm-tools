@@ -1,37 +1,4 @@
-# remove previous copies if any present
-sapply( rev(which(search() %in% "RCT3_functions")), function(i) {detach(pos = i); invisible(NULL)} )     
 
-# create a place on the search path for functions to sit
-rct3.env <- attach(NULL, name = "RCT3_functions")
-
-# put functions in the right place
-evalq(envir = rct3.env, 
-{
- 
-read.rct3.file <-
-function(fname, sep = "\t")
-{
-  hdr <- readLines(fname, n = 2)
-  stock <- strsplit(hdr, sep)[[1]][1]
-  data_info <- as.numeric(strsplit(hdr, sep)[[2]][1:3])
-  ind_names <- gsub(sep, "", readLines(fname)[-(1:(data_info[2]+2))])
-
-  dat <- t(sapply(strsplit(readLines(fname)[1:data_info[2]+2], sep), as.numeric))
-  dat[dat==-11] <- NA
-  
-  dat <- as.data.frame(dat)  
-  ind_names <- gsub("-", "_", make.unique(ind_names[1:(ncol(dat) - 2)]))
-  names(dat) <- c("yearclass", "recruitment", ind_names[1:(ncol(dat) - 2)])
-  attr(dat, "stock") <- stock
-  
-  dat
-}
-
-write.rct3.file <-
-function(x, fname)
-{
-  cat("\nNOT YET!!!\n")
-}
 
 get.rct3.inputs <-
 function(stk.obj, surv.obj, control, rec.age)
@@ -48,7 +15,7 @@ function(stk.obj, surv.obj, control, rec.age)
   names(input.ages) <- names(inputs)
 
   inputs[] <-
-  lapply(names(inputs), 
+  lapply(names(inputs),
     function(nam)
     {
       x <- inputs[[nam]]
@@ -57,25 +24,25 @@ function(stk.obj, surv.obj, control, rec.age)
     })
 
   yearclass <- range( unlist(sapply(inputs, function(x) as.numeric(names(x)))))
-  yearclass <- yearclass[1]:yearclass[2] 
-  
+  yearclass <- yearclass[1]:yearclass[2]
+
   out <- data.frame(yearclass = yearclass)
   out[names(inputs)] <- NA
   rownames(out) <- yearclass
-  
+
   for (i in names(inputs))out[names(inputs[[i]]), i] <- inputs[[i]]
 
   out
 }
 
 
-rct3 <-
-function(formula, data, predictions = NULL, shrink = FALSE, old = TRUE)
+rct3 <- function(formula, data, predictions = NULL, shrink = FALSE,
+                 power = 3, range = 20, min.se = 0.2,
+                 old = TRUE)
 {
   form <- formula[[3]]
   bits <- list()
-  while(length(form)>1)
-  {
+  while(length(form)>1) {
     bits <- c(bits, form[[3]])
     form <- form[[2]]
   }
@@ -86,112 +53,139 @@ function(formula, data, predictions = NULL, shrink = FALSE, old = TRUE)
   weight <- function(y, y0, D, p) pmax(0, (1 - ((y0 - y)/D)^p)^p)
 
   log.data <- data
-  if (old)
-  {
+  if (old) {
     log.data[names(data) != "yearclass"] <- log(data[names(data) != "yearclass"] + 1)
   } else # think of something to do with zeros
   {
-    log.data[names(data) != "yearclass"] <- log(data[names(data) != "yearclass"])  
-  }  
+    log.data[names(data) != "yearclass"] <- log(data[names(data) != "yearclass"])
+  }
+
   # fit one model at a time
-  do.one.prediction <-
-  function(i, predict.yr)
-  {
+  do.one.prediction <- function(i, predict.yr) {
     wk.data <- subset(log.data, yearclass < predict.yr)
-    if (nrow(wk.data) < 3) stop("too few data points in one survey!") 
-    m <- lm(formulas[[i]], data = wk.data)
+    yr_diff <- max(wk.data$yearclass) - wk.data$yearclass
+    wk.data$wts <- (1 - (pmin(range, yr_diff)/range)^power)^power
+    if (nrow(wk.data) < 3) stop("too few data points in one survey!")
+    m <- lm(formulas[[i]], data = wk.data, weights = wts)
     b <- {function(x) c(-x[1], 1)/x[2] }(unname(coef(m)))
-    rss <- sum( m$residuals^2 )
-    mss <- with(m, sum((fitted.values - mean(fitted.values))^2))
-    sigma <- b[2] * sqrt(rss / m $ df.residual)
+    wts <- wk.data[names(m$residuals),"wts"]
+    rss <- sum( wts * m$residuals^2 )
+    mss <- sum(wts * (m$fitted.values - mean(m$fitted.values))^2)
+    sigma <- b[2] * sqrt(rss / (sum(wts) - 2))
     rsqr <- mss / (rss + mss)
-    n <- m $ df.residual + 2
-    
+    n <- m$df.residual + 2
+
     Xp <- unname(model.matrix(formulas2[[i]][c(1,3)], subset(log.data, yearclass == predict.yr)))
-    if (nrow(Xp))
-    {
+    if (nrow(Xp)) {
       X <- unname(model.matrix(formulas2[[i]], wk.data))
-      XXinv <- solve(t(X) %*% X)
+      XXinv <- solve(t(X) %*% diag(wts) %*% X)
       pred <- drop(Xp %*% b)
-      se.pred <- sqrt(n / (n-2)) * sigma * sqrt(1 + drop(Xp %*% XXinv %*% t(Xp)))
+      se.pred <- sqrt(sum(wts) / (sum(wts)-2)) * sigma * sqrt(1 + drop(Xp %*% XXinv %*% t(Xp)))
       index <- Xp[,2]
-    } else index <- pred <- se.pred <- NA
-    
-    data.frame(index = as.character(formulas[[i]][[2]]), 
-               slope = b[2], intercept = b[1], 
+    } else {
+      index <- pred <- se.pred <- NA
+    }
+
+    data.frame(index = as.character(formulas[[i]][[2]]),
+               slope = b[2], intercept = b[1],
                se = sigma, rsquare = rsqr, n = n,
                indices = index, prediction = pred,
                se.pred = se.pred)
   }
-  
-  if (is.null(predictions)) 
-  {
-    y <- eval(formula[[2]], log.data) 
-    predictions <- log.data $ yearclass[is.na(y)] 
+
+  if (is.null(predictions)) {
+    y <- eval(formula[[2]], log.data)
+    predictions <- log.data $ yearclass[is.na(y)]
   }
-  
-  out <- 
-    lapply(predictions, 
-      function(yr) 
+
+  out <-
+    lapply(predictions,
+      function(yr)
       {
         out <- do.call( rbind, lapply(1:length(formulas), do.one.prediction, predict.yr = yr))
+        # drop years with no indices
+        out$slope[is.na(out$indices)] <- NA
+        out$intercept[is.na(out$indices)] <- NA
+        out$se[is.na(out$indices)] <- NA
+        out$rsquare[is.na(out$indices)] <- NA
+        out$n[is.na(out$indices)] <- NA
+        # calculate vpa contribution
         vpa <- eval(formula[[2]], log.data)[log.data $ yearclass < yr]
-        vpa <- vpa[!is.na(vpa)] 
+        yrs <- log.data$yearclass[log.data$yearclass < yr]
+        notNA <- !is.na(vpa)
+        wts <- (1 - (pmin(range, max(yrs) - yrs)/range)^power)^power
+        vpa <- vpa[notNA]
+        yrs <- yrs[notNA]
+        wts <- wts[notNA]
         out <- rbind(out, data.frame(index = "VPA Mean",
-                                     slope = NA, intercept = NA, 
+                                     slope = NA, intercept = NA,
                                      se = NA, rsquare = NA, n = length(vpa),
-                                     indices = NA, 
-                                     prediction = mean(vpa),
-                                     se.pred = sd(vpa)))
-        if (shrink)                              
+                                     indices = NA,
+                                     prediction = sum(wts * vpa) / sum(wts),
+                                     se.pred = sqrt(sum(wts * (vpa - mean(vpa))^2) / (sum(wts)-1))
+                                     ))
+        if (shrink)
         {
-          out $ WAP.weights <- with(out, (1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE))
+          se.pred <- pmax(out$se.pred, min.se)
+          out$WAP.weights <- (1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE)
         }
         else
         {
-          out $ WAP.weights <- c(with(out[1:(nrow(out)-1),], (1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE)), 0)
+          se.pred <- pmax(out[1:(nrow(out)-1)]$se.pred, min.se)
+          out $ WAP.weights <- c((1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE), 0)
         }
-          
-        out                                                                                                                        
+
+        out
       })
   names(out) <- paste("yearclass", predictions, sep=":")
 
-  out <- list(stock = attr(data, "stock"),
-              info = c(length(bits), nrow(data), range(log.data $ yearclass)), 
-              rct3 = out, 
-              rct3.summary = do.call(rbind, lapply(out, summarise.rct3)),
-              shrink = shrink)
+  summarise.rct3 <- function(tmp)
+  {
+    pred <- with(tmp, sum(prediction * WAP.weights, na.rm = TRUE))
+    int.se <- 1/sqrt(sum(1/tmp $ se.pred^2, na.rm = TRUE))
 
-  class(out) <- "rct3"  
+    data.frame(WAP = exp(pred), logWAP = pred, int.se = int.se)
+  }
+
+  out <- list(stock = attr(data, "stock"),
+              info = c(length(bits), nrow(data), range(log.data $ yearclass)),
+              rct3 = out,
+              rct3.summary = do.call(rbind, lapply(out, summarise.rct3)),
+              shrink = shrink,
+              power = power,
+              range = range,
+              min.se = min.se)
+
+  class(out) <- "rct3"
   out
 }
 
-summarise.rct3 <-
-function(tmp)
-{
-  pred <- with(tmp, sum(prediction * WAP.weights, na.rm = TRUE))
-  int.se <- 1/sqrt(sum(1/tmp $ se.pred^2, na.rm = TRUE))
-  
-  data.frame(WAP = exp(pred), logWAP = pred, int.se = int.se)
-}
 
-print.rct3 <-
-function(x, digits = max(3, getOption("digits") - 3), ...)
+
+summary.rct3 <- function(x, digits = max(3, getOption("digits") - 3), ...)
 {
   hdr <- with(x,
-  c("Analysis by RCT3 ver4.0\n",                       
+  c("Analysis by RCT3 ver3.1 - R translation\n",
     stock,
     paste("\nData for ", info[1]," surveys over ", info[2]," year classes : ", info[3]," - ", info[4], sep=""),
     "Regression type = C",
-    "Tapered time weighting not applied",
+    if (x $ power > 0) {
+    paste("Tapered time weighting applied\npower =", power, "over", range, "years")
+    } else {
+    "Tapered time weighting not applied"
+    },
     "Survey weighting not applied",
-    if (x $ shrink) "Final estimates ARE shrunk towards mean" else "Final estimates not shrunk towards mean",
+    if (shrink) {
+      "Final estimates shrunk towards mean"
+    } else {
+      "Final estimates not shrunk towards mean"
+    },
     "Estimates with S.E.'S greater than that of mean included",
-    "Minimum S.E. for any survey taken as    .00",
+    paste("Minimum S.E. for any survey taken as   ", min.se),
     "Minimum of   3 points used for regression\n",
     "Forecast/Hindcast variance correction used.\n"
   ))
- 
+
   cat(paste(hdr, collapse = "\n"), "\n")
   for (i in seq_along(x $ rct3))
   {
@@ -199,18 +193,43 @@ function(x, digits = max(3, getOption("digits") - 3), ...)
     print.data.frame(x $ rct3[[i]], digits = digits, row.names = FALSE)
     cat("\n")
   }
-  
-  print.data.frame(x $ rct3.summary, digits = digits)  
+
+  print.data.frame(x $ rct3.summary, digits = digits)
 }
 
-rct3.recruits <-
-function(x)
+print.rct3 <- function(x, digits = max(3, getOption("digits") - 3), ...)
+{
+  hdr <- with(x,
+  c("Analysis by RCT3 ver4.0\n",
+    stock,
+    paste("\nData for ", info[1]," surveys over ", info[2]," year classes : ", info[3]," - ", info[4], sep=""),
+    "Regression type = C",
+    if (x $ power > 0) {
+    paste("Tapered time weighting applied\npower =", power, "over", range, "years")
+    } else {
+    "Tapered time weighting not applied"
+    },
+    "Survey weighting not applied",
+    if (shrink) {
+      "Final estimates ARE shrunk towards mean"
+    } else {
+      "Final estimates not shrunk towards mean"
+    },
+    "Estimates with S.E.'S greater than that of mean included",
+    paste("Minimum S.E. for any survey taken as   ", min.se),
+    "Minimum of   3 points used for regression\n",
+    "Forecast/Hindcast variance correction used.\n"
+  ))
+
+  cat(paste(hdr, collapse = "\n"), "\n")
+
+  print.data.frame(x $ rct3.summary, digits = digits)
+}
+
+
+rct3.recruits <- function(x)
 {
   out <- x $ rct3.summary $ WAP
   names(out) <- rownames(x $ rct3.summary)
   out
 }
- 
-})
-
-  

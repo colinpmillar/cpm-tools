@@ -1,22 +1,26 @@
-# get data - only requirement from this function is that data is a data.frame with names yearclass, recruitment, index1, index2, ...
-#           - can optionally have an attribute "stock" with the stock name in it
 
+#setwd("2019-03-13-edda-rct3/")
 
-# get rct3 functions
-source("http://cpm-tools.googlecode.com/files/rct3functions.r")
+# read from the rct3 file
+recdata <- read.table("recrhad18_ed.txt", header = TRUE)
 
-# read from the rct3 format
-fname <- "C:/colin/packages/mycode/rct3/whiIN.dat"
-whi.dat <- read.rct3.file(fname, sep = "\t")
+formula <- recruitment ~ NT1 + NT2 + NT3 + NAK1 + NAK2 + NAK3 + RT1 + RT2 + RT3 + EC01 + ECO2 + ECO3
 
-# create a data.frame from the stock, index objects with info on what surveys and ages to use
-control <- data.frame(survey = c("IBTS_Q1", "IBTS_Q1", "IBTS_Q3", "IBTS_Q3"), ages = c(1, 2, 0, 1))
-whi.dat2 <- get.rct3.inputs(stk.obj = tmp $ whi.xsa, 
-                            surv.obj = tmp $ whiting.index, 
-                            control = control, rec.age = 1)
+# load rct3 function
+source("rct3.R")
 
-formula <- recruitment ~ ibtsq1age1 + ibtsq1age2 + ibtsq3age0 + ibtsq3age1
+my_rct3 <- rct3(formula, recdata, predictions = 2012:2017, shrink = TRUE)
 
-my_rct3 <- rct3(formula, whi.dat, predictions = 2008:2010, shrink = TRUE)
-
+# see a short summary
 my_rct3
+
+# for a full summary do:
+summary(my_rct3)
+
+# the components are here:
+my_rct3$rct3
+my_rct3$rct3.summary
+
+# predicted recruitment
+t(my_rct3$rct3.summary["WAP"])
+
