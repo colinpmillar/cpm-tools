@@ -1,0 +1,10 @@
+Package: rct3
+Version: 1.0-0
+Date: 2019-03-14
+Title: Function to run RCT3
+Authors@R: person("Colin", "Millar", role=c("aut","cre"), email="colin.millar@ices.dk")
+LazyData: yes
+Description: Function to run RCT3: .
+License: GPL (>= 2)
+Encoding: UTF-8
+RoxygenNote: 6.1.1
