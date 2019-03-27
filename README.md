@@ -7,7 +7,8 @@
 rct3
 =======
 
-rct3 provides functions .
+rct3 provides functions to run and summarise a calibrated regression to predict recruitment 
+  using the method decribed by Shepherd and implmented in RCT3 dos program Ver3.1
 
 rct3 is implemented as an [R](https://www.r-project.org) package and
 <!-- available on [CRAN](https://cran.r-project.org/package=rct3) - NOT YET!. -->
@@ -43,15 +44,15 @@ Development
 -----------
 
 rct3 is developed openly on
-[GitHub](https://github.com/colinpmillar/rct3).
+[GitHub](https://github.com/ices-tools-dev/rct3).
 
 Feel free to open an
-[issue](https://github.com/colinpmillar/rct3/issues) there if you
+[issue](https://github.com/ices-tools-dev/rct3/issues) there if you
 encounter problems or have suggestions for future versions.
 
 The current development version can be installed using:
 
 ```R
 library(devtools)
-install_github("colinpmillar/rct3")
+install_github("ices-tools-dev/rct3")
 ```
