@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/colinpmillar/rct3.svg?branch=master)](https://travis-ci.org/colinpmillar/rct3)
-[![CRAN Status](http://r-pkg.org/badges/version/icesTAF)](https://cran.r-project.org/package=rct3)
-[![CRAN Monthly](http://cranlogs.r-pkg.org/badges/icesTAF)](https://cran.r-project.org/package=rct3)
-[![CRAN Total](http://cranlogs.r-pkg.org/badges/grand-total/icesTAF)](https://cran.r-project.org/package=rct3)
+[![Build Status](https://travis-ci.org/ices-tools-prod/rct3.svg?branch=master)](https://travis-ci.org/ices-tools-prod/rct3)
+[![CRAN Status](http://r-pkg.org/badges/version/rct3)](https://cran.r-project.org/package=rct3)
+[![CRAN Monthly](http://cranlogs.r-pkg.org/badges/rct3)](https://cran.r-project.org/package=rct3)
+[![CRAN Total](http://cranlogs.r-pkg.org/badges/grand-total/rct3)](https://cran.r-project.org/package=rct3)
 
 
 rct3
@@ -10,15 +10,17 @@ rct3
 rct3 provides functions .
 
 rct3 is implemented as an [R](https://www.r-project.org) package and
-available on [CRAN](https://cran.r-project.org/package=rct3) - NOT YET!.
+<!-- available on [CRAN](https://cran.r-project.org/package=rct3) - NOT YET!. -->
+available to install from this repository
 
 Installation
 ------------
 
-icesTAF can be installed from CRAN using the `install.packages` command:
+icesTAF can be installed from CRAN using the  `install_github` command from
+the `devtools` package:
 
 ```R
-install.packages("rct3")
+devtools::install_github("ices-tools-prod/rct3")
 ```
 
 Usage
