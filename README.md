@@ -17,7 +17,7 @@ available to install from this repository
 Installation
 ------------
 
-icesTAF can be installed from CRAN using the  `install_github` command from
+rct3 can be installed from this repository using the  `install_github` command from
 the `devtools` package:
 
 ```R
