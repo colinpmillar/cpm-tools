@@ -1,5 +1,5 @@
 # rct3 1.0.0.9000
 
-- Internal changes only.
+- Fixed bug in rct3 when shrink = FALSE.
 
 

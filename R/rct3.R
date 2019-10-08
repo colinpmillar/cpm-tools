@@ -154,7 +154,7 @@ rct3 <- function(formula, data, predictions = NULL, shrink = FALSE,
         }
         else
         {
-          se.pred <- pmax(out[1:(nrow(out)-1)]$se.pred, min.se)
+          se.pred <- pmax(out[1:(nrow(out)-1),]$se.pred, min.se)
           out $ WAP.weights <- c((1/se.pred^2) / sum(1/se.pred^2, na.rm = TRUE), 0)
         }
 
