@@ -1,11 +1,11 @@
 Package: rct3
-Version: 1.0-0
-Date: 2019-03-14
+Version: 1.0.0.9000
+Date: 2019-10-08
 Title: Function to Run a Calibrated Regression to Predict Recruitment
 Authors@R: person("Colin", "Millar", role=c("aut","cre"), email="colin.millar@ices.dk")
 LazyData: yes
 Description: Function to run a calibrated regression to predict recruitment 
-  using themethod decribed by Shepherd
+  using themethod decribed by Shepherd.
 License: GPL (>= 2)
 Encoding: UTF-8
 RoxygenNote: 6.1.1
