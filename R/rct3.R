@@ -60,10 +60,10 @@
 #' @export
 
 rct3 <- function(formula, data, predictions = NULL, shrink = FALSE,
-                 power = 3, range = 20, min.se = 0.2,
+                 power = 0, range = 20, min.se = 0,
                  old = TRUE)
 {
-  form <- formula[[3]]
+  form <- formula[[3]] # explanatory variables
   bits <- list()
   while(length(form)>1) {
     bits <- c(bits, form[[3]])
@@ -116,9 +116,9 @@ rct3 <- function(formula, data, predictions = NULL, shrink = FALSE,
                se.pred = se.pred)
   }
 
-  if (is.null(predictions)) {
+  if (is.null(predictions)) { # if NULL, predict for years where numbers = NA
     y <- eval(formula[[2]], log.data)
-    predictions <- log.data $ yearclass[is.na(y)]
+    predictions <- log.data$yearclass[is.na(y)]
   }
 
   out <-

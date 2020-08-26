@@ -4,8 +4,16 @@
 \alias{rct3}
 \title{Run a calibrated regression to predict recruitment}
 \usage{
-rct3(formula, data, predictions = NULL, shrink = FALSE, power = 3,
-  range = 20, min.se = 0.2, old = TRUE)
+rct3(
+  formula,
+  data,
+  predictions = NULL,
+  shrink = FALSE,
+  power = 0,
+  range = 20,
+  min.se = 0,
+  old = TRUE
+)
 }
 \arguments{
 \item{formula}{a formula to define which surveys to use in the recruitment
