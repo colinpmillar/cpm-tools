@@ -8,12 +8,16 @@
 #' @param data a dataframe with one column named 'yearclass' and other columns
 #'        with the recruitment and the survey index relavent for that recruitment
 #'        value
-#' @param predictions which yearclasses to make recruitment predictions for
-#' @param shrink shrink predictions to the VPA mean?
-#' @param power the power to use 0 - no weighting, 2 - bisquare, 3 - tricubic
+#' @param predictions which yearclasses to make recruitment predictions for. 
+#'   When predictions = NULL (Default), predictions will be done for yearclasses that 
+#'   are NAs.
+#' @param shrink shrink predictions to the VPA mean? (Default: shrink = FALSE)
+#' @param power the power to use 0 - no weighting, 2 - bisquare, 3 - tricubic 
+#'   (Default: power = 0)
 #' @param range the year range to use in the time tapered weighting
 #' @param min.se the minimum standard error used in the weighting of predictions
-#' @param old default TRUE, defines how to treat zero values.  In the origional
+#'   (Default: min.se = 0)
+#' @param old default FALSE, defines how to treat zero values.  In the origional
 #'        implmentation al values were transformed using log(x + 1), old=TRUE
 #'        maintains this.
 #'
@@ -38,7 +42,7 @@
 #' formula <- recruitment ~ NT1 + NT2 + NT3 +
 #'                          NAK1 + NAK2 + NAK3 +
 #'                          RT1 + RT2 + RT3 +
-#'                          EC01 + ECO2 + ECO3
+#'                          ECO1 + ECO2 + ECO3
 #'
 #' my_rct3 <- rct3(formula, recdata, predictions = 2012:2017, shrink = TRUE)
 #'
@@ -61,7 +65,7 @@
 
 rct3 <- function(formula, data, predictions = NULL, shrink = FALSE,
                  power = 0, range = 20, min.se = 0,
-                 old = TRUE)
+                 old = FALSE)
 {
   form <- formula[[3]] # explanatory variables
   bits <- list()
@@ -73,7 +77,7 @@ rct3 <- function(formula, data, predictions = NULL, shrink = FALSE,
   formulas <- lapply(bits, function(x) {tmp <- formula; tmp[[3]] <- tmp[[2]]; tmp[[2]] <- x; tmp})
   formulas2 <- lapply(bits, function(x) {tmp <- formula; tmp[[3]] <- x; tmp})
 
-  weight <- function(y, y0, D, p) pmax(0, (1 - ((y0 - y)/D)^p)^p)
+  weight <- function(y, y0, D, p) pmax(0, (1 - ((y0 - y)/D)^p)^p) # not used?
 
   log.data <- data
   if (old) {
@@ -171,13 +175,16 @@ rct3 <- function(formula, data, predictions = NULL, shrink = FALSE,
   }
 
   out <- list(stock = attr(data, "stock"),
-              info = c(length(bits), nrow(data), range(log.data $ yearclass)),
-              rct3 = out,
-              rct3.summary = do.call(rbind, lapply(out, summarise.rct3)),
-              shrink = shrink,
-              power = power,
-              range = range,
-              min.se = min.se)
+    info = c(length(bits), nrow(data), range(log.data $ yearclass)),
+    rct3 = out,
+    rct3.summary = do.call(rbind, lapply(out, summarise.rct3)),
+    shrink = shrink,
+    power = power,
+    range = range,
+    min.se = min.se, 
+    formula = formula, 
+    old = old, 
+    data = data)
 
   class(out) <- "rct3"
   out

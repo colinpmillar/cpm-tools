@@ -12,7 +12,7 @@ rct3(
   power = 0,
   range = 20,
   min.se = 0,
-  old = TRUE
+  old = FALSE
 )
 }
 \arguments{
@@ -23,17 +23,21 @@ estimation.}
 with the recruitment and the survey index relavent for that recruitment
 value}
 
-\item{predictions}{which yearclasses to make recruitment predictions for}
+\item{predictions}{which yearclasses to make recruitment predictions for. 
+When predictions = NULL (Default), predictions will be done for yearclasses that 
+are NAs.}
 
-\item{shrink}{shrink predictions to the VPA mean?}
+\item{shrink}{shrink predictions to the VPA mean? (Default: shrink = FALSE)}
 
-\item{power}{the power to use 0 - no weighting, 2 - bisquare, 3 - tricubic}
+\item{power}{the power to use 0 - no weighting, 2 - bisquare, 3 - tricubic 
+(Default: power = 0)}
 
 \item{range}{the year range to use in the time tapered weighting}
 
-\item{min.se}{the minimum standard error used in the weighting of predictions}
+\item{min.se}{the minimum standard error used in the weighting of predictions
+(Default: min.se = 0)}
 
-\item{old}{default TRUE, defines how to treat zero values.  In the origional
+\item{old}{default FALSE, defines how to treat zero values.  In the origional
 implmentation al values were transformed using log(x + 1), old=TRUE
 maintains this.}
 }
@@ -56,7 +60,7 @@ data(recdata)
 formula <- recruitment ~ NT1 + NT2 + NT3 +
                          NAK1 + NAK2 + NAK3 +
                          RT1 + RT2 + RT3 +
-                         EC01 + ECO2 + ECO3
+                         ECO1 + ECO2 + ECO3
 
 my_rct3 <- rct3(formula, recdata, predictions = 2012:2017, shrink = TRUE)
 

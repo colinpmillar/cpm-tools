@@ -9,7 +9,7 @@ calcD(rct3Obj = NULL, A = NULL)
 \arguments{
 \item{rct3Obj}{results object of class rct3}
 
-\item{A}{vector. Assumed numbers to compare to rct prediction}
+\item{vector.}{Assumed numbers to compare to rct prediction}
 }
 \value{
 vector
@@ -35,6 +35,6 @@ calcD(rct3Obj = res, A = log(83000))
 }
 \references{
 ICES. 2008. Report of the Ad hoc Group on Criteria for Reopening Fisheries 
-Advice (AGCREFA), 20–22 August 2008, Copenhagen, Denmark. 
-ICES CM 2008/ACOM:60. 30 pp.
+  Advice (AGCREFA), 20–22 August 2008, Copenhagen, Denmark. 
+  ICES CM 2008/ACOM:60. 30 pp.
 }

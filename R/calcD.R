@@ -11,14 +11,14 @@
 #'   standard error from RCT3 (ICES, 2008).
 #'
 #' @param rct3Obj results object of class rct3
-#' @param A vector. Assumed numbers to compare to rct prediction
+#' @param vector. Assumed numbers to compare to rct prediction
 #'
 #' @return vector
 #' 
 #' @references 
 #' ICES. 2008. Report of the Ad hoc Group on Criteria for Reopening Fisheries 
-#' Advice (AGCREFA), 20–22 August 2008, Copenhagen, Denmark. 
-#' ICES CM 2008/ACOM:60. 30 pp.
+#'   Advice (AGCREFA), 20–22 August 2008, Copenhagen, Denmark. 
+#'   ICES CM 2008/ACOM:60. 30 pp.
 #' 
 #' @export
 #'
