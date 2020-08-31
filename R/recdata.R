@@ -21,16 +21,10 @@
 #'   \code{...} \tab and so on
 #' }
 #'
-#'
 #' @seealso
 #'
 #' \code{\link{rct3}}  run a calibrated regression to predict rectruitment.
 #'
 #' \code{\link{rct3-package}} gives an overview of the package.
-#'
-#'
-#' @examples
-#' data(recdata)
-#' head(recdata)
 
-NA
+NULL

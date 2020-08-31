@@ -22,10 +22,9 @@
 #' # load recruitment data
 #' data(recdata)
 #'
-#' formula <- recruitment ~ NT1 + NT2 + NT3 +
-#'                          NAK1 + NAK2 + NAK3 +
-#'                          RT1 + RT2 + RT3 +
-#'                          EC01 + ECO2 + ECO3
+#' formula <-
+#'  recruitment ~ NT1 + NT2 + NT3 + NAK1 + NAK2 + NAK3 +
+#'                RT1 + RT2 + RT3 + EC01 + ECO2 + ECO3
 #'
 #' my_rct3 <- rct3(formula, recdata, predictions = 2012:2017, shrink = TRUE)
 #'

@@ -4,24 +4,22 @@
 \name{recdata}
 \alias{recdata}
 \title{Recruitment and survey index data}
-\format{Data frame containing 14 columns:
+\format{
+Data frame containing 14 columns:
 \tabular{ll}{
   \code{yearclass} \tab the yearclass\cr
   \code{recruitment} \tab the recruiment (age 3) for that yearclass\cr
   \code{NT1} \tab The age 1 survey index from 'NT' survey\cr
   \code{NT2} \tab The age 2 survey index from 'NT' survey\cr
   \code{...} \tab and so on
-}}
+}
+}
 \usage{
 recdata
 }
 \description{
 data.frame containing recruitment (age 3) and survey indices from several
 surveys over ages 1 to 3
-}
-\examples{
-data(recdata)
-head(recdata)
 }
 \seealso{
 \code{\link{rct3}}  run a calibrated regression to predict rectruitment.

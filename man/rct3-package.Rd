@@ -15,6 +15,9 @@ method decribed by Shepherd
   \code{\link{summary.rct3}} \tab summarise a rct3 object
 }
 }
-\author{
-Colin Millar.
+\references{
+J. G. Shepherd, Prediction of year-class strength by calibration
+regression analysis of multiple recruit index series, ICES
+Journal of Marine Science, Volume 54, Issue 5, October 1997,
+Pages 741–752, \url{https://doi.org/10.1006/jmsc.1997.0222}
 }

@@ -4,8 +4,7 @@
 \alias{summary.rct3}
 \title{Summarise an rct3 fit}
 \usage{
-\method{summary}{rct3}(object, digits = max(3, getOption("digits") - 3),
-  ...)
+\method{summary}{rct3}(object, digits = max(3, getOption("digits") - 3), ...)
 }
 \arguments{
 \item{object}{an object of class rct3 - an output from the rct3 function.}

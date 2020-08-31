@@ -4,8 +4,16 @@
 \alias{rct3}
 \title{Run a calibrated regression to predict recruitment}
 \usage{
-rct3(formula, data, predictions = NULL, shrink = FALSE, power = 3,
-  range = 20, min.se = 0.2, old = TRUE)
+rct3(
+  formula,
+  data,
+  predictions = NULL,
+  shrink = FALSE,
+  power = 3,
+  range = 20,
+  min.se = 0.2,
+  old = TRUE
+)
 }
 \arguments{
 \item{formula}{a formula to define which surveys to use in the recruitment
@@ -37,9 +45,9 @@ Function to run a calibrated regression to predict recruitment using the
 method decribed by Shepherd
 }
 \note{
-This function was written based on the publication by Shepherd with additional
-reverse engeneering by comparing results to previous examples run using
-the RCT3 ver3.1 dos program
+This function was written based on the publication by Shepherd (1997)
+ with additional reverse engeneering by comparing results to
+previous examples run using the RCT3 ver3.1 dos program
 }
 \examples{
 # load recruitment data
@@ -65,6 +73,12 @@ my_rct3$rct3.summary
 # predicted recruitment
 t(my_rct3$rct3.summary["WAP"])
 
+}
+\references{
+J. G. Shepherd, Prediction of year-class strength by calibration
+regression analysis of multiple recruit index series, ICES
+Journal of Marine Science, Volume 54, Issue 5, October 1997,
+Pages 741–752, \url{https://doi.org/10.1006/jmsc.1997.0222}
 }
 \seealso{
 \code{\link{rct3-package}} gives an overview of the package.

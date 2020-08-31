@@ -23,9 +23,9 @@
 #'
 #' @note
 #'
-#' This function was written based on the publication by Shepherd with additional
-#' reverse engeneering by comparing results to previous examples run using
-#' the RCT3 ver3.1 dos program
+#' This function was written based on the publication by Shepherd (1997)
+#'  with additional reverse engeneering by comparing results to
+#' previous examples run using the RCT3 ver3.1 dos program
 #'
 #' @seealso
 #'
@@ -54,6 +54,13 @@
 #'
 #' # predicted recruitment
 #' t(my_rct3$rct3.summary["WAP"])
+#'
+#' @references
+#'
+#' J. G. Shepherd, Prediction of year-class strength by calibration
+#' regression analysis of multiple recruit index series, ICES
+#' Journal of Marine Science, Volume 54, Issue 5, October 1997,
+#' Pages 741–752, \url{https://doi.org/10.1006/jmsc.1997.0222}
 #'
 #' @importFrom stats coef lm model.matrix
 #'
