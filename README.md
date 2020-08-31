@@ -7,7 +7,7 @@
 rct3
 =======
 
-rct3 provides functions to run and summarise a calibrated regression to predict recruitment 
+rct3 provides functions to run and summarise a calibrated regression to predict recruitment
   using the method decribed by Shepherd and implmented in RCT3 dos program Ver3.1
 
 rct3 is implemented as an [R](https://www.r-project.org) package and
@@ -56,3 +56,9 @@ The current development version can be installed using:
 library(devtools)
 install_github("ices-tools-dev/rct3")
 ```
+
+Previous versions
+-----------------
+
+This code was modified from a older version help on code.google.com:
+https://code.google.com/archive/p/cpm-tools/
