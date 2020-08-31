@@ -42,7 +42,7 @@ Object of class \verb{rct3}.
 }
 \description{
 Function to run a calibrated regression to predict recruitment using the
-method decribed by Shepherd
+method decribed by Shepherd (1997)
 }
 \note{
 This function was written based on the publication by Shepherd (1997)
