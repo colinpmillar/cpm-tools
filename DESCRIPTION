@@ -1,7 +1,7 @@
 Package: rct3
 Version: 1.0.2
 Date: 2020-08-31
-Title: Functions to Predict Fish Year-Class Stregth From Survey Data.
+Title: Functions to Predict Fish Year-Class Strength from Survey Data
 Authors@R:
   c(
     person("Colin", "Millar", role = c("aut", "cre"), email="colin.millar@ices.dk"),
