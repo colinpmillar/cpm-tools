@@ -1,15 +1,15 @@
 Package: rct3
 Version: 1.0.2
-Date: 2019-10-08
-Title: Function to Run a Calibrated Regression to Predict Recruitment
+Date: 2020-08-31
+Title: Functions to Predict Fish Year-Class Stregth From Survey Data.
 Authors@R:
   c(
     person("Colin", "Millar", role = c("aut", "cre"), email="colin.millar@ices.dk"),
     person("Marc", "Taylor", role = "aut")
   )
 LazyData: yes
-Description: Function to run a calibrated regression to predict recruitment
-  using themethod decribed by Shepherd.
+Description: Functions to predict fish year-class strength by calibration
+  regression analysis of multiple recruitment index series.
 License: file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.1.1

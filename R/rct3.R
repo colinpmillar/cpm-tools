@@ -1,7 +1,7 @@
 #' Run a calibrated regression to predict recruitment
 #'
 #' Function to run a calibrated regression to predict recruitment using the
-#' method decribed by Shepherd
+#' method decribed by Shepherd (1997)
 #'
 #' @param formula a formula to define which surveys to use in the recruitment
 #'        estimation.
