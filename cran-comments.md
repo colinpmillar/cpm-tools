@@ -12,4 +12,8 @@ Maintainer: 'Colin Millar <colin.millar@ices.dk>'
 
 New submission
 
-Non-FOSS package license (file LICENSE)
+## NOTE
+
+maintainer email changed - @ices.dk server was previously blocking
+emails from @xmpalantir.wu.ac.at resulting in me changing the maintainer
+email so I could proceed with package submission.

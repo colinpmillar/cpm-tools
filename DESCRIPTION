@@ -1,6 +1,6 @@
 Package: rct3
-Version: 1.0.2
-Date: 2020-08-31
+Version: 1.0.3
+Date: 2020-09-09
 Title: Functions to Predict Fish Year-Class Strength from Survey Data
 Authors@R:
   c(
@@ -10,6 +10,6 @@ Authors@R:
 LazyData: yes
 Description: Functions to predict fish year-class strength by calibration
   regression analysis of multiple recruitment index series.
-License: file LICENSE
+License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.1
